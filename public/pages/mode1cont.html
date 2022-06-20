@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+  <html>
+
+    <head>
+      <title>CPEN291 Drawbot</title>
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="../styles/style.css">
+    </head>
+
+    <body>
+
+      <header>
+        <div class="container">
+          <div class="logo">
+            <img src="../styles/logo.jpg" alt="Drawbot Logo">
+          </div>
+          <nav class="navigation-top">
+            <ul>
+              <li><a href="../index.html" class="nav-link">Home</a></li>
+              <li><a href="#" class="nav-link">Mode1</a></li>
+              <li><a href="mode2cont.html" class="nav-link">Mode2</a></li>
+              <li><a href="showcase.html" class="nav-link">Showcase</a></li>
+            </ul>
+
+            <div class="dropdown">
+              <button class="button-dropdown">Menu</button>
+              <div class="dropdown-content">
+                <a href="../index.html">Home</a>
+                <a href="mode2cont.html">Mode 2</a>
+                <a href="showcase.html">Showcase</a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <div class = "mode1_title">
+        <h1>MODE 1</h1>
+        <h2>Select shapes or input texts for the robot to draw</h2>
+        <h3>① Select from six basic shapes</h3>
+        <h3>② Input a string of text as command to choose shapes from the left or write your desired text</h3>
+      </div>
+      
+      <section class="mode-1-sub" id="Mode1">
+        <script>
+          function printShape(shape) {
+            document.getElementById("demo").innerHTML = shape;
+          }
+          function userinput(){
+            var content = document.getElementById("content").value;
+            var input = content.toLowerCase();
+            if(input == "o" || input =="0"){
+              input = "circle";
+            }
+            if (input!="circle" && input != "square" && input != "oval" && input != "heart" && input != "rectangle" && input != "triangle" && input != "cpen"){
+              document.getElementById("result").innerText = "invalid input";
+            }
+            else{
+              document.getElementById("result").innerText = content;
+            }
+          }
+        </script>
+
+        <div class="option1">
+          <h2>① Choose one shape below:</h2>
+          <div class="shapes"> 
+            <input type="image" src="../styles/shape_square.jpg" id = "square" class = "block" onclick="printShape('SQUARE')" value = "square"> 
+        
+            <input type="image" src="../styles/shape_triangle.jpg" id = "triangle" class = "block" onclick="printShape('TRIANGLE')" value = "triangle"> 
+       
+            <input type="image" src="../styles/shape_circle.jpg" id = "circle" class = "block" onclick="printShape('CIRCLE')" value = "circle"> 
+            <br>
+
+            <input type="image" src="../styles/shape_rectangle.jpg" id = "rectangle" class = "block" onclick="printShape('RECTANGLE')" value = "rectangle"> 
+  
+            <input type="image" src="../styles/shape_heart.jpg" id = "heart" class = "block" onclick="printShape('HEART')" value = "heart"> 
+
+            <input type="image" src="../styles/shape_oval.jpg" id = "oval" class = "block" onclick="printShape('OVAL')" value = "oval"> 
+          </div>
+          <div class = "shape_text">
+            <p>You've chosen: </p>
+            <p id="demo"></p>
+          </div>
+        </div>
+
+
+        <div class="option2">
+          <h2>② Click submit to draw:</h2> 
+          <div class="chatbox">
+            <h1 id = "result">TEXT</h1>
+            <div class="input">
+              <label for="fname"> <br> Input text:</label>
+              <input type="text" id="content" placeholder="Enter content max length 20" maxlength="20">
+            </div>  
+            <button type="button" id="submit" onclick="userinput()">submit</button>
+          </div>
+        </div>
+
+      </section>
+
+      <div id="status">
+        <h3 id="drawing">Drawing ...</h3>
+        <h3 id="done">Done!</h3>
+      </div>
+
+      <footer>
+        <p>Designed by G17-A <br>
+          Updated: March 31st, 2022</p>
+      </footer>
+
+      <script src="/socket.io/socket.io.js"> </script>
+      <script>
+        const socket = io();
+
+        // Update drawing status to "Done" when it is done drawing 
+
+        socket.on('Done1', (msg) => {
+          document.getElementById("drawing").style.display = "none";
+          document.getElementById("status").style.backgroundColor = "green";
+          document.getElementById("done").style.display = "block";
+          setTimeout(() => {
+            document.getElementById("done").style.display = "none";
+          }, 1400);
+        });
+
+        // Button sockets
+
+        const squarebtn = document.getElementById("square");
+        squarebtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('square_cmd', squarebtn.value);        
+        });
+
+        const trianglebtn = document.getElementById("triangle");
+        trianglebtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('triangle_cmd', trianglebtn.value);        
+        });
+
+        const circlebtn = document.getElementById("circle");
+        circlebtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('circle_cmd', circlebtn.value);        
+        });
+
+        const rectanglebtn = document.getElementById("rectangle");
+        rectanglebtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('rectangle_cmd', rectanglebtn.value);        
+        });
+
+        const heartbtn = document.getElementById("heart");
+        heartbtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('heart_cmd', heartbtn.value);        
+        });
+
+        const ovalbtn = document.getElementById("oval");
+        ovalbtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('oval_cmd', ovalbtn.value);        
+        });
+
+        const submitbtn = document.getElementById("submit");
+        const input = document.getElementById("content")
+        submitbtn.addEventListener("click", () =>{
+          document.getElementById("drawing").style.display = "block";
+          socket.emit('input', content.value);
+        });
+
+      </script>
+
+    </body>
+
+  </html>
+  
+
+  
